@@ -1,6 +1,6 @@
 # API Specification — Kanban Task Management
 
-**Base URL:** `http://localhost:5000/api`
+**Base URL:** `http://localhost:8000/api`
 
 All request and response bodies use `Content-Type: application/json`.
 
@@ -21,9 +21,34 @@ Fetch all tasks for the board.
     "title": "Setup Database",
     "description": "Install MySQL and run migrations",
     "status": "New",
-    "updatedAt": "2023-10-27T10:00:00Z"
+    "createdAt": "2026-02-19T20:00:00Z",
+    "updatedAt": "2026-02-19T20:00:00Z"
   }
 ]
+```
+
+---
+
+### `GET /tasks/:id`
+Fetch a single task by its ID.
+
+**URL Parameter:** `:id` — the integer ID of the task.
+
+**Success Response — `200 OK`:**
+```json
+{
+  "id": 1,
+  "title": "Setup Database",
+  "description": "Install MySQL and run migrations",
+  "status": "New",
+  "createdAt": "2026-02-19T20:00:00Z",
+  "updatedAt": "2026-02-19T20:00:00Z"
+}
+```
+
+**Error Response — `404 Not Found`:**
+```json
+{ "error": "Task with id 1 not found" }
 ```
 
 ---
@@ -35,7 +60,7 @@ Create a new task. The task is created with a default status of `"New"`.
 ```json
 {
   "title": "string",
-  "description": "string"
+  "description": "string (optional)"
 }
 ```
 
@@ -46,22 +71,24 @@ Create a new task. The task is created with a default status of `"New"`.
   "title": "Build Login Page",
   "description": "Create the React login component",
   "status": "New",
-  "updatedAt": "2023-10-28T09:00:00Z"
+  "createdAt": "2026-02-20T09:00:00Z",
+  "updatedAt": "2026-02-20T09:00:00Z"
 }
 ```
 
 ---
 
 ### `PUT /tasks/:id`
-Update a task's status and/or title.
+Update a task's details or status.
 
 **URL Parameter:** `:id` — the integer ID of the task to update.
 
 **Request Body:**
 ```json
 {
-  "status": "string",
-  "title": "string (optional)"
+  "title": "string (optional)",
+  "description": "string (optional)",
+  "status": "string (optional)"
 }
 ```
 
@@ -74,18 +101,13 @@ The `status` field must be one of the seven valid workflow stages (see [Status V
   "title": "Build Login Page",
   "description": "Create the React login component",
   "status": "In Progress",
-  "updatedAt": "2023-10-28T11:30:00Z"
+  "updatedAt": "2026-02-20T11:30:00Z"
 }
 ```
 
 **Error Response — `404 Not Found`:**
 ```json
-{ "error": "Task not found" }
-```
-
-**Error Response — `400 Bad Request`:**
-```json
-{ "error": "Invalid status value" }
+{ "error": "Task with id 2 not found" }
 ```
 
 ---
@@ -95,22 +117,20 @@ Delete a task permanently.
 
 **URL Parameter:** `:id` — the integer ID of the task to delete.
 
-**Request Body:** None
-
 **Success Response — `200 OK`:**
 ```json
-{ "message": "Task 2 deleted successfully" }
+{ "message": "Task deleted successfully" }
 ```
 
 **Error Response — `404 Not Found`:**
 ```json
-{ "error": "Task not found" }
+{ "error": "Task with id 2 not found" }
 ```
 
 ---
 
 ### `POST /chatbot`
-Send a natural language command to the chatbot engine. The bot parses the message and may perform a task operation.
+Send a natural language command to the chatbot.
 
 **Request Body:**
 ```json
@@ -126,28 +146,15 @@ Send a natural language command to the chatbot engine. The bot parses the messag
 }
 ```
 
-**Success Response — `200 OK` (task was modified):**
+**Success Response — `200 OK`:**
 ```json
 {
-  "reply": "Task #12 moved to In Progress",
-  "action": "UPDATE_TASK",
-  "taskId": 12
-}
-```
-
-**Success Response — `200 OK` (informational / no action taken):**
-```json
-{
-  "reply": "Sorry, I didn't understand that command. Try: 'move [id] to [status]'",
-  "action": null,
-  "taskId": null
+  "message": "Task 12 moved to In Progress"
 }
 ```
 
 **Supported chatbot command patterns:**
-- `"move [id] to [status]"` — Updates the task's status column.
-- `"create task [title]"` — Creates a new task with a given title.
-- `"delete task [id]"` — Deletes the specified task.
+- `"move [id] to [status]"` — Updates the task's status.
 
 ---
 
@@ -155,15 +162,13 @@ Send a natural language command to the chatbot engine. The bot parses the messag
 
 The `status` field is an ENUM. Only the following values are valid:
 
-| Status | Meaning |
-|---|---|
-| `New` | Requirement not yet complete |
-| `Ready for Implementation` | Requirement finalised |
-| `Assigned` | Task assigned to a developer |
-| `In Progress` | Development has started |
-| `Moved to QA` | Ready for testing |
-| `QA Failed` | Issues found during testing |
-| `QA Pass Ready for Stage` | Approved after QA |
+1. `New`
+2. `Ready for Implementation`
+3. `Assigned`
+4. `In Progress`
+5. `Moved to QA`
+6. `QA Failed`
+7. `QA Pass Ready for Stage`
 
 ---
 
@@ -179,6 +184,6 @@ All error responses follow this shape:
 |---|---|
 | `200` | Success |
 | `201` | Resource created |
-| `400` | Validation error (e.g. invalid status) |
+| `400` | Validation error / Bad request |
 | `404` | Resource not found |
 | `500` | Internal server error |
