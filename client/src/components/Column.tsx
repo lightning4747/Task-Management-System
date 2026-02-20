@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Check, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import type { ITask, TaskStatus } from '../types';
 import TaskCard from './TaskCard';
 
@@ -76,9 +76,6 @@ const Column: React.FC<ColumnProps> = ({ status, tasks, onMove, onDragStart, onD
                 <div className="column-header-info">
                     {status.toUpperCase()} ({tasks.length})
                 </div>
-                <button className="add-task-btn" onClick={() => setIsAdding(true)}>
-                    <Plus size={14} />
-                </button>
             </div>
 
             <div className={`task-list ${isAdding ? 'dim-background' : ''}`}>

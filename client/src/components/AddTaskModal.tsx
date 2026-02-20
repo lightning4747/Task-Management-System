@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import type { TaskStatus } from '../types';
 import './AddTaskModal.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+const STATUSES: TaskStatus[] = [
+    'New',
+    'Ready for Implementation',
+    'Assigned',
+    'In Progress',
+    'Moved to QA',
+    'QA Failed',
+    'QA Pass Ready for Stage'
+];
 
 interface AddTaskModalProps {
     isOpen: boolean;
@@ -12,6 +23,7 @@ interface AddTaskModalProps {
 const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [status, setStatus] = useState<TaskStatus>('New');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -31,14 +43,14 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
             await axios.post(`${API_URL}/tasks`, {
                 title,
                 description,
-                status: 'New'
+                status
             });
 
-            // Notify other components to refresh
             window.dispatchEvent(new CustomEvent('task-added'));
 
             setTitle('');
             setDescription('');
+            setStatus('New');
             onClose();
         } catch (err: any) {
             console.error('Failed to create task:', err);
@@ -69,6 +81,20 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose }) => {
                             placeholder="What needs to be done?"
                             autoFocus
                         />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="task-status">Column / Status</label>
+                        <select
+                            id="task-status"
+                            value={status}
+                            onChange={e => setStatus(e.target.value as TaskStatus)}
+                            className="modal-select"
+                        >
+                            {STATUSES.map(s => (
+                                <option key={s} value={s}>{s}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div className="form-group">

@@ -188,8 +188,6 @@ body {
 
 .nav-container {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -215,7 +213,7 @@ body {
   border: none;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-out;
 }
 
 .primary-nav-btn {
@@ -244,7 +242,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.9;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease-out;
 }
 
 .nav-link:hover {
