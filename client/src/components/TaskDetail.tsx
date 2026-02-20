@@ -135,6 +135,7 @@ const handleSave = async () => {
         setIsDeleting(true);
         try {
             await axios.delete(`${API_URL}/tasks/${id}`);
+            window.dispatchEvent(new CustomEvent('task-updated'));
             navigate('/tasks');
         } catch (err: any) {
             console.error('Failed to delete task:', err);

@@ -81,17 +81,22 @@ const Board: React.FC = () => {
     };
 
     // DELETE /api/tasks/:id  (quick delete from card)
-    const deleteTask = async (id: number) => {
-        try {
-            await axios.delete(`${API_URL}/tasks/${id}`);
-            await fetchTasks();
-            showNotification('Task deleted successfully');
-        } catch (err: any) {
-            console.error('Failed to delete task:', err);
-            showNotification('Failed to delete task');
-        }
-    };
-
+const deleteTask = async (id: number) => {
+    try {
+        await axios.delete(`${API_URL}/tasks/${id}`);
+        
+        // Trigger the refresh immediately
+        await fetchTasks();
+        
+        // Dispatch event so other components (like the Chatbot) stay in sync
+        window.dispatchEvent(new CustomEvent('task-updated'));
+        
+        showNotification('Task deleted successfully');
+    } catch (err: any) {
+        console.error('Failed to delete task:', err);
+        showNotification('Failed to delete task');
+    }
+};
     const handleDragStart = (e: React.DragEvent, taskId: number) => {
         e.dataTransfer.setData('taskId', taskId.toString());
         e.dataTransfer.effectAllowed = 'move';
