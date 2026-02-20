@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import AddTaskModal from './AddTaskModal';
+import React from 'react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
 const Layout: React.FC = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const location = useLocation();
+
+    const isBoardPage = location.pathname === '/board' || location.pathname === '/';
 
     return (
         <div className="app-layout">
@@ -13,24 +14,22 @@ const Layout: React.FC = () => {
                         Kanban Board
                     </Link>
                     <div className="nav-links">
-                        <button
+                        <Link
+                            to="/new-task"
                             className="nav-btn primary-nav-btn"
-                            onClick={() => setIsModalOpen(true)}
+                            style={{ textDecoration: 'none' }}
                         >
                             + New Task
-                        </button>
-                        <Link to="/board" className="nav-link">Back to Tasks</Link>
+                        </Link>
+                        {!isBoardPage && (
+                            <Link to="/board" className="nav-link">Back to Tasks</Link>
+                        )}
                     </div>
                 </div>
             </nav>
             <main className="main-content">
                 <Outlet />
             </main>
-
-            <AddTaskModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-            />
         </div>
     );
 };

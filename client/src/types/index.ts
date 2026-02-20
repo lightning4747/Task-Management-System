@@ -12,11 +12,10 @@ export interface ITask {
     title: string;
     description: string;
     status: TaskStatus;
+    createdAt: string; // ISO 8601
     updatedAt: string; // ISO 8601
 }
 
 export interface IChatbotResponse {
-    reply: string;
-    action: 'UPDATE_TASK' | 'CREATE_TASK' | 'DELETE_TASK' | null;
-    taskId: number | null;
+    message: string;
 }

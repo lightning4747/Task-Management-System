@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import type { ITask, TaskStatus } from '../types';
 import Column from './Column';
 import Chatbot from './Chatbot';
 import TaskDrawer from './TaskDrawer';
+import AddTaskPage from './AddTaskPage';
 import { MOCK_TASKS } from '../constants/mockData';
 import './Board.css';
 
@@ -24,6 +26,9 @@ const Board: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+
+    const location = useLocation();
+    const isAddingNew = location.pathname === '/new-task';
 
     const fetchTasks = useCallback(async () => {
         setIsLoading(true);
@@ -88,9 +93,9 @@ const Board: React.FC = () => {
     }
 
     return (
-        <div className={`board-container ${selectedTaskId ? 'drawer-open' : ''}`}>
+        <div className={`board-container ${selectedTaskId || isAddingNew ? 'drawer-open' : ''}`}>
             {error && <div className="error-banner">{error}</div>}
-            <div className="board-grid">
+            <div className={`board-grid ${isAddingNew ? 'content-blur' : ''}`}>
                 {STATUSES.map(status => (
                     <Column
                         key={status}
@@ -113,7 +118,9 @@ const Board: React.FC = () => {
                 />
             )}
 
-            <Chatbot onTaskChange={fetchTasks} />
+            {isAddingNew && <AddTaskPage />}
+
+            <Chatbot />
         </div>
     );
 };

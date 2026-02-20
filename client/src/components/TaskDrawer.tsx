@@ -67,7 +67,9 @@ const TaskDrawer: React.FC<TaskDrawerProps> = ({ taskId, onClose }) => {
                             </div>
                             <div className="info-item">
                                 <label><Calendar size={14} /> Created</label>
-                                <span className="info-value">Dec 20, 2026</span>
+                                <span className="info-value">
+                                    {new Date(task.createdAt).toLocaleDateString()}
+                                </span>
                             </div>
                             <div className="info-item">
                                 <label><Clock size={14} /> Last Updated</label>

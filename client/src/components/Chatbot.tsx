@@ -4,7 +4,6 @@ import { MessageCircle, X } from 'lucide-react';
 import type { IChatbotResponse } from '../types';
 
 interface ChatbotProps {
-    onTaskChange: () => void;
 }
 
 interface Message {
@@ -14,7 +13,7 @@ interface Message {
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const Chatbot: React.FC<ChatbotProps> = ({ onTaskChange }) => {
+const Chatbot: React.FC<ChatbotProps> = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([
@@ -42,11 +41,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onTaskChange }) => {
             const response = await axios.post(`${API_URL}/chatbot`, { message: userMessage });
             const data: IChatbotResponse = response.data;
 
-            setMessages(prev => [...prev, { text: data.reply, isBot: true }]);
-
-            if (data.action !== null) {
-                onTaskChange();
-            }
+            setMessages(prev => [...prev, { text: data.message, isBot: true }]);
         } catch (err) {
             console.error('Chatbot error:', err);
             setMessages(prev => [...prev, { text: 'Sorry, I encountered an error. Please try again later.', isBot: true }]);
