@@ -33,7 +33,7 @@
 .task-detail-card {
     background-color: var(--card);
     width: 100%;
-    max-width: 600px;
+    max-width: 480px;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-2xl);
     border: 1px solid var(--border);
@@ -54,7 +54,7 @@
 }
 
 .modal-header {
-    padding: 2rem;
+    padding: 1.25rem;
     background-color: var(--primary);
     color: var(--primary-foreground);
     text-align: center;
@@ -62,17 +62,17 @@
 
 .modal-header h2 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.15em;
 }
 
 .modal-form {
-    padding: 3rem 2rem;
+    padding: 1.5rem 1.75rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.25rem;
 }
 
 .form-group {
@@ -121,12 +121,13 @@
 }
 
 .modal-error {
-    background-color: var(--destructive);
-    color: var(--destructive-foreground);
-    padding: 1rem;
+    background-color: #000;
+    color: #fff;
+    padding: 0.75rem 1rem;
     border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .modal-actions {
