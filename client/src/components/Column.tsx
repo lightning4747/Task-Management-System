@@ -8,6 +8,7 @@ interface ColumnProps {
     status: TaskStatus;
     tasks: ITask[];
     onMove: (id: number, newStatus: TaskStatus) => void;
+    onDelete: (id: number) => void;
     onDragStart: (e: React.DragEvent, taskId: number) => void;
     onDragEnd: (e: React.DragEvent) => void;
     onDrop: (e: React.DragEvent) => void;
@@ -17,7 +18,7 @@ interface ColumnProps {
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
-const Column: React.FC<ColumnProps> = ({ status, tasks, onMove, onDragStart, onDragEnd, onDrop, onTaskClick, onTaskAdded }) => {
+const Column: React.FC<ColumnProps> = ({ status, tasks, onMove, onDelete, onDragStart, onDragEnd, onDrop, onTaskClick, onTaskAdded }) => {
     const [isAdding, setIsAdding] = useState(false);
     const [newTitle, setNewTitle] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
@@ -101,6 +102,7 @@ const Column: React.FC<ColumnProps> = ({ status, tasks, onMove, onDragStart, onD
                         key={task.id}
                         task={task}
                         onMove={onMove}
+                        onDelete={onDelete}
                         onDragStart={(e) => onDragStart(e, task.id)}
                         onDragEnd={onDragEnd}
                         onClick={() => onTaskClick(task.id)}

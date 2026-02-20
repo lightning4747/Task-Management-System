@@ -26,9 +26,15 @@ const Board: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+    const [notification, setNotification] = useState<string | null>(null);
 
     const location = useLocation();
     const isAddingNew = location.pathname === '/new-task';
+
+    const showNotification = (message: string) => {
+        setNotification(message);
+        setTimeout(() => setNotification(null), 3000);
+    };
 
     const fetchTasks = useCallback(async () => {
         setIsLoading(true);
@@ -47,17 +53,34 @@ const Board: React.FC = () => {
     useEffect(() => {
         fetchTasks();
 
-        window.addEventListener('task-added', fetchTasks);
-        return () => window.removeEventListener('task-added', fetchTasks);
+        const handleTaskAdded = () => {
+            fetchTasks();
+            showNotification('Task created successfully!');
+        };
+
+        window.addEventListener('task-added', handleTaskAdded);
+        return () => window.removeEventListener('task-added', handleTaskAdded);
     }, [fetchTasks]);
 
     const moveTask = async (id: number, newStatus: TaskStatus) => {
         try {
             await axios.put(`${API_URL}/tasks/${id}`, { status: newStatus });
             await fetchTasks();
+            showNotification(`Task moved to ${newStatus}`);
         } catch (err: any) {
             console.error('Failed to move task:', err);
-            alert('Failed to move task. Please try again.');
+            showNotification('Failed to move task');
+        }
+    };
+
+    const deleteTask = async (id: number) => {
+        try {
+            await axios.delete(`${API_URL}/tasks/${id}`);
+            await fetchTasks();
+            showNotification('Task deleted successfully');
+        } catch (err: any) {
+            console.error('Failed to delete task:', err);
+            showNotification('Failed to delete task');
         }
     };
 
@@ -67,6 +90,11 @@ const Board: React.FC = () => {
 
         const target = e.target as HTMLElement;
         target.classList.add('dragging-card');
+
+        // Remove from original element after browser takes a ghost image snapshot
+        setTimeout(() => {
+            target.classList.remove('dragging-card');
+        }, 0);
     };
 
     const handleDragEnd = (e: React.DragEvent) => {
@@ -95,6 +123,14 @@ const Board: React.FC = () => {
     return (
         <div className={`board-container ${selectedTaskId || isAddingNew ? 'drawer-open' : ''}`}>
             {error && <div className="error-banner">{error}</div>}
+
+            {notification && (
+                <div className="success-toast">
+                    <span className="toast-icon">✓</span>
+                    {notification}
+                </div>
+            )}
+
             <div className={`board-grid ${isAddingNew ? 'content-blur' : ''}`}>
                 {STATUSES.map(status => (
                     <Column
@@ -102,6 +138,7 @@ const Board: React.FC = () => {
                         status={status}
                         tasks={tasks.filter(t => t.status === status)}
                         onMove={moveTask}
+                        onDelete={deleteTask}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onDrop={(e) => handleDrop(e, status)}

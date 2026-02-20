@@ -21,12 +21,55 @@
 
 /* Physics-based DND Styles */
 .dragging-card {
-    opacity: 0.8 !important;
-    transform: scale(1.05) rotate(2deg) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    opacity: 0.9 !important;
+    transform: scale(1.05) rotate(1deg) !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
     border-color: var(--primary) !important;
     z-index: 5000;
     cursor: grabbing !important;
+    transition: transform 0.1s ease-out !important;
+}
+
+/* Hangar Design - Hook and Attachment */
+.dragging-card::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 15px;
+    width: 14px;
+    height: 25px;
+    border: 3px solid var(--primary);
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+    background: transparent;
+    z-index: 1;
+    transform-origin: bottom center;
+    animation: hangar-sway 1.5s ease-in-out infinite alternate;
+}
+
+/* Hangar Rivet/Bolt */
+.dragging-card::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 19px;
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    z-index: 2;
+    border: 2px solid var(--card);
+    /* Bolt effect */
+}
+
+@keyframes hangar-sway {
+    from {
+        transform: rotate(-6deg);
+    }
+
+    to {
+        transform: rotate(6deg);
+    }
 }
 
 .column {
@@ -202,6 +245,30 @@
     cursor: grab;
 }
 
+.delete-task-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    padding: 4px;
+    border-radius: 4px;
+    z-index: 5;
+}
+
+.task-card:hover .delete-task-btn {
+    opacity: 1;
+}
+
+.delete-task-btn:hover {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+}
+
 .task-card::after {
     content: '';
     position: absolute;
@@ -268,17 +335,21 @@
 
 /* Ghost Slot */
 .ghost-slot {
-    height: 100px;
-    border: 2px dashed var(--border);
-    border-radius: var(--radius-md);
+    height: 110px;
+    border: 2px dashed var(--primary);
+    border-radius: var(--radius-lg);
+    background-color: oklch(from var(--primary) l c h / 0.05);
+    /* Very subtle tint */
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-out;
     position: relative;
     margin-bottom: 1.25rem;
 }
 
 .column.drag-over .ghost-slot {
-    opacity: 0.3;
+    opacity: 1;
+    border-color: var(--primary);
+    transform: scale(0.98);
 }
 
 .ghost-slot::after {
@@ -482,4 +553,49 @@
     position: sticky;
     top: 0;
     z-index: 100;
+}
+
+.success-toast {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 9999;
+    animation: toast-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #22c55e;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+}
+
+@keyframes toast-in {
+    from {
+        transform: translate(-50%, -20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }

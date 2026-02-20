@@ -1,9 +1,10 @@
-import React from 'react';
+import { X } from 'lucide-react';
 import type { ITask, TaskStatus } from '../types';
 
 interface TaskCardProps {
     task: ITask;
     onMove: (id: number, newStatus: TaskStatus) => void;
+    onDelete: (id: number) => void;
     onDragStart: (e: React.DragEvent) => void;
     onDragEnd: (e: React.DragEvent) => void;
     onClick: () => void;
@@ -19,7 +20,7 @@ const STATUS_ORDER: TaskStatus[] = [
     'QA Pass Ready for Stage'
 ];
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onDragStart, onDragEnd, onClick }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onDelete, onDragStart, onDragEnd, onClick }) => {
     const currentIndex = STATUS_ORDER.indexOf(task.status);
     const prevStatus = currentIndex > 0 ? STATUS_ORDER[currentIndex - 1] : null;
     const nextStatus = currentIndex < STATUS_ORDER.length - 1 ? STATUS_ORDER[currentIndex + 1] : null;
@@ -32,6 +33,17 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onDragStart, onDragEn
             onDragEnd={onDragEnd}
             onClick={onClick}
         >
+            <button
+                className="delete-task-btn"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(task.id);
+                }}
+                title="Delete Task"
+            >
+                <X size={14} />
+            </button>
+
             <h3 className="task-card-title">
                 {task.title}
             </h3>
