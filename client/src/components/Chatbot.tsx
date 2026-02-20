@@ -11,7 +11,7 @@ interface Message {
     isBot: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 const Chatbot: React.FC<ChatbotProps> = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +42,11 @@ const Chatbot: React.FC<ChatbotProps> = () => {
             const data: IChatbotResponse = response.data;
 
             setMessages(prev => [...prev, { text: data.message, isBot: true }]);
+
+            // If the message indicates a success move, refresh the board
+            if (data.message.toLowerCase().includes("moved")) {
+                window.dispatchEvent(new CustomEvent('task-added'));
+            }
         } catch (err) {
             console.error('Chatbot error:', err);
             setMessages(prev => [...prev, { text: 'Sorry, I encountered an error. Please try again later.', isBot: true }]);
