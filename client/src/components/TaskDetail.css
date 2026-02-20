@@ -1,0 +1,338 @@
+/* ── Task Detail Modal ────────────────────────────────────────────────────
+ * Renders on top of the Board via React Router nested <Outlet />.
+ * .task-overlay  — full-screen blurred backdrop (shared with AddTaskPage)
+ * .task-detail-modal — the white card panel
+ * ─────────────────────────────────────────────────────────────────────── */
+
+.task-detail-modal {
+    background-color: var(--card);
+    width: 100%;
+    max-width: 560px;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(28px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ── Header bar (TASK-ID + close button) ────────────────────────────── */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    flex-shrink: 0;
+}
+
+.task-id-badge {
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: var(--primary-foreground);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.modal-close-btn:hover {
+    opacity: 1;
+}
+
+/* ── Scrollable body ─────────────────────────────────────────────────── */
+.modal-form {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow-y: auto;
+}
+
+.modal-loading {
+    padding: 3rem;
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted-foreground);
+}
+
+/* ── Task title (view mode) ──────────────────────────────────────────── */
+.modal-task-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--foreground);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.2;
+}
+
+/* ── Description text (view mode) ───────────────────────────────────── */
+.modal-task-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--foreground);
+    opacity: 0.85;
+}
+
+/* ── Timestamp rows ──────────────────────────────────────────────────── */
+.modal-meta-row {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--muted-foreground);
+    padding-top: 0.25rem;
+}
+
+.modal-meta-row+.modal-meta-row {
+    padding-top: 0;
+    margin-top: -0.75rem;
+}
+
+/* ── Inline edit inputs ──────────────────────────────────────────────── */
+.detail-edit-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.detail-edit-input {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    font-weight: 800;
+    background-color: var(--background);
+    color: var(--foreground);
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.detail-edit-textarea {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    background-color: var(--background);
+    color: var(--foreground);
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.7;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.detail-edit-input:focus,
+.detail-edit-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px oklch(from var(--primary) l c h / 0.15);
+}
+
+/* ── Action buttons row ──────────────────────────────────────────────── */
+.task-detail-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.25rem;
+}
+
+/* Delete button (visible only in edit mode) */
+.detail-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    background-color: var(--muted);
+    color: var(--destructive);
+    border: 1px solid var(--destructive);
+    transition: all 0.2s ease-out;
+    margin-left: auto;
+    /* push delete to the far right */
+}
+
+.detail-delete-btn:hover:not(:disabled) {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.detail-delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Inline feedback banners ─────────────────────────────────────────── */
+.detail-feedback {
+    padding: 0.7rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.83rem;
+    font-weight: 600;
+}
+
+.detail-feedback.success {
+    background-color: oklch(from var(--primary) l c h / 0.12);
+    color: var(--primary);
+    border: 1px solid oklch(from var(--primary) l c h / 0.3);
+}
+
+.detail-feedback.error {
+    background-color: oklch(from var(--destructive) l c h / 0.1);
+    color: var(--destructive);
+    border: 1px solid oklch(from var(--destructive) l c h / 0.3);
+}
+
+/* ── Delete Confirmation Dialog ──────────────────────────────────────── */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    z-index: 6000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fade-in 0.2s ease-out;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.confirm-dialog {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+    padding: 2.5rem 2rem;
+    max-width: 380px;
+    width: 100%;
+    animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+}
+
+.confirm-icon {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.confirm-dialog h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--foreground);
+}
+
+.confirm-dialog p {
+    color: var(--muted-foreground);
+    font-size: 0.88rem;
+    margin: 0 0 2rem;
+    line-height: 1.6;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.confirm-cancel-btn {
+    padding: 0.6rem 1.4rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease-out;
+}
+
+.confirm-cancel-btn:hover {
+    background-color: var(--accent);
+}
+
+.confirm-delete-btn {
+    padding: 0.6rem 1.4rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+    border: none;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s ease-out;
+}
+
+.confirm-delete-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    opacity: 0.9;
+}
+
+.confirm-delete-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
