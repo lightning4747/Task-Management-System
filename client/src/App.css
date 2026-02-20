@@ -204,6 +204,38 @@ body {
   letter-spacing: 0.15em;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primary-nav-btn {
+  background-color: var(--primary-foreground);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: var(--shadow-sm);
+}
+
+.primary-nav-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.95;
+}
+
 .nav-link {
   color: var(--primary-foreground);
   text-decoration: none;

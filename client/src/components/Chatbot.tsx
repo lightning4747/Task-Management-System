@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { MessageCircle, X } from 'lucide-react';
 import type { IChatbotResponse } from '../types';
 
 interface ChatbotProps {
@@ -14,6 +15,7 @@ interface Message {
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const Chatbot: React.FC<ChatbotProps> = ({ onTaskChange }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([
         { text: 'Hello! How can I help you manage your tasks today?', isBot: true }
@@ -25,7 +27,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onTaskChange }) => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, isOpen]);
 
     const handleSend = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
@@ -53,10 +55,23 @@ const Chatbot: React.FC<ChatbotProps> = ({ onTaskChange }) => {
         }
     };
 
+    if (!isOpen) {
+        return (
+            <button className="chatbot-toggle-btn" onClick={() => setIsOpen(true)}>
+                <MessageCircle size={28} />
+            </button>
+        );
+    }
+
     return (
         <div className="chatbot">
             <div className="chatbot-header">
-                <h3>Task Assistant</h3>
+                <div className="chatbot-header-content">
+                    <h3>Task Assistant</h3>
+                    <button className="chatbot-close-btn" onClick={() => setIsOpen(false)}>
+                        <X size={20} />
+                    </button>
+                </div>
             </div>
             <div className="chatbot-messages" ref={scrollRef}>
                 {messages.map((msg, i) => (

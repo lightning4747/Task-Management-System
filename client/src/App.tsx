@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Board from './components/Board';
-import TaskDetail from './components/TaskDetail';
 import './App.css';
 
 function NotFound() {
@@ -21,12 +20,12 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/board" replace />} />
           <Route path="/board" element={<Board />} />
-          <Route path="/task/:id" element={<TaskDetail />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;

@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import type { ITask, TaskStatus } from '../types';
 
 interface TaskCardProps {
     task: ITask;
     onMove: (id: number, newStatus: TaskStatus) => void;
+    onDragStart: (e: React.DragEvent) => void;
+    onDragEnd: (e: React.DragEvent) => void;
+    onClick: () => void;
 }
 
 const STATUS_ORDER: TaskStatus[] = [
@@ -17,19 +19,25 @@ const STATUS_ORDER: TaskStatus[] = [
     'QA Pass Ready for Stage'
 ];
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onMove }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onDragStart, onDragEnd, onClick }) => {
     const currentIndex = STATUS_ORDER.indexOf(task.status);
     const prevStatus = currentIndex > 0 ? STATUS_ORDER[currentIndex - 1] : null;
     const nextStatus = currentIndex < STATUS_ORDER.length - 1 ? STATUS_ORDER[currentIndex + 1] : null;
 
     return (
-        <div className="task-card">
-            <Link to={`/task/${task.id}`} className="task-card-title">
+        <div
+            className="task-card"
+            draggable={true}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onClick={onClick}
+        >
+            <h3 className="task-card-title">
                 {task.title}
-            </Link>
+            </h3>
             <p className="task-card-desc">{task.description}</p>
 
-            <div className="task-card-actions">
+            <div className="task-card-actions" onClick={e => e.stopPropagation()}>
                 {prevStatus && (
                     <button
                         className="move-btn back-btn"
