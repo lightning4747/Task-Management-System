@@ -25,6 +25,9 @@ app.get('/api/health', (_req, res) => {
 // GET    /api/tasks        → fetch all tasks
 app.get('/api/tasks', TaskController.getAllTasks);
 
+//GET by id
+app.get('/api/tasks/:id', TaskController.getTaskById);
+
 // POST   /api/tasks        → create a task (default status: 'New')
 app.post('/api/tasks', TaskController.createTask);
 
@@ -47,6 +50,7 @@ app.listen(PORT, () => {
     console.log('');
     console.log('  Available routes:');
     console.log(`  GET    http://localhost:${PORT}/api/tasks`);
+    console.log(`  GET by id   http://localhost:${PORT}/api/tasks/:id`);
     console.log(`  POST   http://localhost:${PORT}/api/tasks`);
     console.log(`  PUT    http://localhost:${PORT}/api/tasks/:id`);
     console.log(`  DELETE http://localhost:${PORT}/api/tasks/:id`);

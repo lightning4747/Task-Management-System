@@ -37,20 +37,35 @@ class TaskController {
         }
     };
 
-    deleteTask = async (req: Request, res: Response) => {
-        try {
-            const { id } = req.params;
-            if (!id) {
-                res.status(400).json({ error: 'Task ID is required' });
-                return;
-            }
-
-            await TaskService.deleteTask(parseInt(id as string, 10));
-            res.status(200).json({ message: 'Task deleted successfully' });
-        } catch (error: any) {
-            res.status(404).json({ error: error.message });
+deleteTask = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id || typeof id !== 'string') {
+            return res.status(400).json({ error: 'Task ID is required' });
         }
-    };
+
+        await TaskService.deleteTask(parseInt(id, 10));
+        res.status(200).json({ message: 'Task deleted successfully' });
+    } catch (error: any) {
+        res.status(404).json({ error: error.message });
+    }
+};
+getTaskById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        //Guard clause
+        if (!id || typeof id !== 'string') {
+            return res.status(400).json({ error: 'Valid Task ID is required' });
+        }
+
+        const task = await TaskService.getTaskById(parseInt(id,10));
+        res.status(200).json(task);
+    } catch (error: any) {
+        res.status(404).json({ error: error.message });
+    }
+};
 }
 
 export default new TaskController();

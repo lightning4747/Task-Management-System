@@ -1,3 +1,4 @@
+// server/src/services/taskService.ts
 import Task from '../models/Task.js';
 
 class TaskService {
@@ -5,11 +6,20 @@ class TaskService {
         return await Task.findAll();
     }
 
-    async createTask(data: { title: string; description?: string; status?: Task['status'] }) {
+    // New method to support your friend's popup/modal logic
+    async getTaskById(id: number) {
+        const task = await Task.findByPk(id);
+        if (!task) {
+            throw new Error(`Task with id ${id} not found`);
+        }
+        return task;
+    }
+
+    async createTask(data: { title: string; description?: string; status?: any }) {
         return await Task.create(data);
     }
 
-    async updateTask(id: number, data: { title?: string; description?: string; status?: Task['status'] }) {
+    async updateTask(id: number, data: { title?: string; description?: string; status?: any }) {
         const task = await Task.findByPk(id);
         if (!task) {
             throw new Error(`Task with id ${id} not found`);
