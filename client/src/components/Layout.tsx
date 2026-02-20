@@ -1,33 +1,36 @@
 import React from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+import { Plus } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const Layout: React.FC = () => {
-    const location = useLocation();
-
-    // Consider the board page as: /tasks (the main board route)
-    const isBoardPage = location.pathname === '/tasks' || location.pathname === '/';
-
     return (
         <div className="app-layout">
             <nav className="top-nav">
                 <div className="nav-container">
-                    <Link to="/tasks" className="nav-logo">
-                        Kanban Board
+
+                    {/* ── Left: Brand ────────────────────────────────── */}
+                    <Link to="/tasks" className="nav-logo" id="nav-logo-link">
+                        <span className="nav-logo-icon">⬡</span>
+                        Kanban
                     </Link>
-                    <div className="nav-links">
+
+                    {/* ── Right: Actions ─────────────────────────────── */}
+                    <div className="nav-actions">
                         <Link
                             to="/tasks/new"
+                            id="nav-new-task-btn"
                             className="nav-btn primary-nav-btn"
                             style={{ textDecoration: 'none' }}
                         >
-                            + New Task
+                            <Plus size={14} strokeWidth={3} />
+                            New Task
                         </Link>
-                        {!isBoardPage && (
-                            <Link to="/tasks" className="nav-link">Back to Tasks</Link>
-                        )}
+                        <ThemeToggle />
                     </div>
                 </div>
             </nav>
+
             <main className="main-content">
                 <Outlet />
             </main>

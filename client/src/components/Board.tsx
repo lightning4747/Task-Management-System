@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import type { ITask, TaskStatus } from '../types';
@@ -26,6 +26,12 @@ const Board: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
 
+    // ── Tab bar ──────────────────────────────────────────────────────────
+    // null = no tab selected (all columns visible, no scroll forced)
+    const [activeStatus, setActiveStatus] = useState<TaskStatus | null>(null);
+    const boardGridRef = useRef<HTMLDivElement>(null);
+    const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
+
     const showNotification = (message: string) => {
         setNotification(message);
         setTimeout(() => setNotification(null), 3000);
@@ -46,23 +52,21 @@ const Board: React.FC = () => {
         }
     }, []);
 
-useEffect(() => {
-    fetchTasks();
-
-    const handleRefresh = () => {
+    useEffect(() => {
         fetchTasks();
-        showNotification('Board updated!');
-    };
 
-    // Listen for both adding and updating
-    window.addEventListener('task-added', handleRefresh);
-    window.addEventListener('task-updated', handleRefresh); // Add this line
+        const handleRefresh = () => {
+            fetchTasks();
+            showNotification('Board updated!');
+        };
 
-    return () => {
-        window.removeEventListener('task-added', handleRefresh);
-        window.removeEventListener('task-updated', handleRefresh); // Add this line
-    };
-}, [fetchTasks]);
+        window.addEventListener('task-added', handleRefresh);
+        window.addEventListener('task-updated', handleRefresh);
+        return () => {
+            window.removeEventListener('task-added', handleRefresh);
+            window.removeEventListener('task-updated', handleRefresh);
+        };
+    }, [fetchTasks]);
 
     // PUT /api/tasks/:id  (status change via drag-and-drop or move buttons)
     const moveTask = async (id: number, newStatus: TaskStatus) => {
@@ -112,6 +116,26 @@ useEffect(() => {
         navigate(`/tasks/${id}`);
     };
 
+    // ── Tab click: highlight + scroll the column into view ───────────────
+    const handleTabClick = (status: TaskStatus, index: number) => {
+        // Toggle off if already active
+        if (activeStatus === status) {
+            setActiveStatus(null);
+            return;
+        }
+        setActiveStatus(status);
+
+        const col = columnRefs.current[index];
+        const grid = boardGridRef.current;
+        if (col && grid) {
+            // Scroll the board grid so this column is at the left edge
+            grid.scrollTo({
+                left: col.offsetLeft - grid.offsetLeft,
+                behavior: 'smooth',
+            });
+        }
+    };
+
     if (isLoading && tasks.length === 0) {
         return <div className="loading">Loading tasks...</div>;
     }
@@ -127,20 +151,45 @@ useEffect(() => {
                 </div>
             )}
 
-            <div className="board-grid">
-                {STATUSES.map(status => (
-                    <Column
+            {/* ── Status tab bar ─────────────────────────────────────── */}
+            <div className="status-tab-bar" role="tablist" aria-label="Filter by status">
+                {STATUSES.map((status, i) => {
+                    const count = tasks.filter(t => t.status === status).length;
+                    return (
+                        <button
+                            key={status}
+                            role="tab"
+                            aria-selected={activeStatus === status}
+                            className={`status-tab ${activeStatus === status ? 'active' : ''}`}
+                            onClick={() => handleTabClick(status, i)}
+                        >
+                            {status}
+                            <span className="tab-count">{count}</span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* ── Board grid ─────────────────────────────────────────── */}
+            <div className="board-grid" ref={boardGridRef}>
+                {STATUSES.map((status, i) => (
+                    <div
                         key={status}
-                        status={status}
-                        tasks={tasks.filter(t => t.status === status)}
-                        onMove={moveTask}
-                        onDelete={deleteTask}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
-                        onDrop={(e) => handleDrop(e, status)}
-                        onTaskClick={handleTaskClick}
-                        onTaskAdded={fetchTasks}
-                    />
+                        ref={el => { columnRefs.current[i] = el; }}
+                        className="column-wrapper"
+                    >
+                        <Column
+                            status={status}
+                            tasks={tasks.filter(t => t.status === status)}
+                            onMove={moveTask}
+                            onDelete={deleteTask}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                            onDrop={(e) => handleDrop(e, status)}
+                            onTaskClick={handleTaskClick}
+                            onTaskAdded={fetchTasks}
+                        />
+                    </div>
                 ))}
             </div>
 
