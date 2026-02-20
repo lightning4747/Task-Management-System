@@ -1,6 +1,6 @@
 # File Tree: kanban-project
 
-**Generated:** 2/19/2026, 6:31:50 PM
+**Generated:** 2/20/2026, 10:39:59 AM
 **Root Path:** `v:\React-projects\Task management system\kanban-project`
 
 ```
@@ -12,7 +12,6 @@
 │   │   │   └── 🖼️ react.svg
 │   │   ├── 🎨 App.css
 │   │   ├── 📄 App.tsx
-│   │   ├── 🎨 index.css
 │   │   └── 📄 main.tsx
 │   ├── 📝 README.md
 │   ├── 📄 eslint.config.js
@@ -23,13 +22,41 @@
 │   ├── ⚙️ tsconfig.json
 │   ├── ⚙️ tsconfig.node.json
 │   └── 📄 vite.config.ts
+├── 📁 docs
+│   ├── 📝 API_SPEC.md
+│   └── 📝 FRONTEND.md
 ├── 📁 server
+│   ├── 📁 src
+│   │   ├── 📁 config
+│   │   │   └── 📄 connection.ts
+│   │   ├── 📁 controllers
+│   │   │   ├── 📄 chatbotController.ts
+│   │   │   └── 📄 taskController.ts
+│   │   ├── 📁 middleware
+│   │   │   └── 📄 errorMiddleware.ts
+│   │   ├── 📁 models
+│   │   │   ├── 📄 Task.ts
+│   │   │   ├── 📄 index.ts
+│   │   │   └── 📄 schema.sql
+│   │   ├── 📁 routes
+│   │   │   ├── 📁 api
+│   │   │   │   ├── 📄 chatbotRoutes.ts
+│   │   │   │   ├── 📄 index.ts
+│   │   │   │   └── 📄 taskRoutes.ts
+│   │   │   └── 📄 index.ts
+│   │   ├── 📁 services
+│   │   │   ├── 📄 chatbotService.ts
+│   │   │   └── 📄 taskService.ts
+│   │   ├── 📄 index.ts
+│   │   └── 📄 types.d.ts
 │   ├── ⚙️ package-lock.json
 │   ├── ⚙️ package.json
 │   └── ⚙️ tsconfig.json
 ├── ⚙️ .gitignore
+├── 📝 README.md
 ├── ⚙️ package-lock.json
-└── ⚙️ package.json
+├── ⚙️ package.json
+└── 📝 tree.md
 ```
 
 ---
