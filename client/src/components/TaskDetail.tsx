@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import type { ITask } from '../types';
-import { MOCK_TASKS } from '../constants/mockData';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 const TaskDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -21,14 +20,7 @@ const TaskDetail: React.FC = () => {
                 setTask(response.data);
             } catch (err: any) {
                 console.error('Failed to fetch task detail:', err);
-                // Fallback to mock data
-                const mockTask = MOCK_TASKS.find(t => t.id === Number(id));
-                if (mockTask) {
-                    setTask(mockTask);
-                    setError('Could not connect to server. Showing local copy.');
-                } else {
-                    setError('Task not found.');
-                }
+                setError('Task not found or the server is unavailable.');
             } finally {
                 setIsLoading(false);
             }
@@ -40,15 +32,17 @@ const TaskDetail: React.FC = () => {
     }, [id]);
 
     if (isLoading) return <div className="loading">Loading task details...</div>;
-    if (error && !task) return <div className="error">{error} <Link to="/board">Go back</Link></div>;
-    if (!task) return <div className="error">Task not found. <Link to="/board">Go back</Link></div>;
+    if (error || !task) return (
+        <div className="error">
+            {error ?? 'Task not found.'} <Link to="/tasks">Go back</Link>
+        </div>
+    );
 
     return (
         <div className="task-detail-container">
-            <Link to="/board" className="back-link">← Back to Board</Link>
+            <Link to="/tasks" className="back-link">← Back to Board</Link>
 
             <div className="task-detail-card">
-                {error && <div className="warning-banner">{error}</div>}
                 <h1 className="task-detail-title">{task.title}</h1>
                 <div className="task-detail-status">
                     <span className="status-label">Status:</span>
@@ -57,6 +51,10 @@ const TaskDetail: React.FC = () => {
                 <div className="task-detail-desc">
                     <h2>Description</h2>
                     <p>{task.description}</p>
+                </div>
+                <div className="task-detail-meta">
+                    <span className="meta-label">Created:</span>
+                    <span className="meta-value">{new Date(task.createdAt).toLocaleString()}</span>
                 </div>
                 <div className="task-detail-meta">
                     <span className="meta-label">Last Updated:</span>

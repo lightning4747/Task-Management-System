@@ -35,14 +35,15 @@ const AddTaskPage: React.FC = () => {
         setError(null);
 
         try {
+            // POST /api/tasks → create a task
             await axios.post(`${API_URL}/tasks`, {
                 title,
                 description,
                 status
             });
 
-            // Redirect back to board
-            navigate('/board');
+            // Redirect back to the board after creation
+            navigate('/tasks');
         } catch (err: any) {
             console.error('Failed to create task:', err);
             setError('Failed to create task. Please check if the server is running.');
@@ -52,7 +53,7 @@ const AddTaskPage: React.FC = () => {
     };
 
     return (
-        <div className="task-overlay" onClick={() => navigate('/board')}>
+        <div className="task-overlay" onClick={() => navigate('/tasks')}>
             <div className="task-detail-card" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>Create New Task</h2>
@@ -99,7 +100,7 @@ const AddTaskPage: React.FC = () => {
                     </div>
 
                     <div className="modal-actions">
-                        <button type="button" className="cancel-btn" onClick={() => navigate('/board')} disabled={isSubmitting}>
+                        <button type="button" className="cancel-btn" onClick={() => navigate('/tasks')} disabled={isSubmitting}>
                             Cancel
                         </button>
                         <button type="submit" className="submit-btn" disabled={isSubmitting}>

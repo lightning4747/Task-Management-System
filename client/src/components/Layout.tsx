@@ -4,25 +4,26 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 const Layout: React.FC = () => {
     const location = useLocation();
 
-    const isBoardPage = location.pathname === '/board' || location.pathname === '/';
+    // Consider the board page as: /tasks (the main board route)
+    const isBoardPage = location.pathname === '/tasks' || location.pathname === '/';
 
     return (
         <div className="app-layout">
             <nav className="top-nav">
                 <div className="nav-container">
-                    <Link to="/board" className="nav-logo">
+                    <Link to="/tasks" className="nav-logo">
                         Kanban Board
                     </Link>
                     <div className="nav-links">
                         <Link
-                            to="/new-task"
+                            to="/tasks/new"
                             className="nav-btn primary-nav-btn"
                             style={{ textDecoration: 'none' }}
                         >
                             + New Task
                         </Link>
                         {!isBoardPage && (
-                            <Link to="/board" className="nav-link">Back to Tasks</Link>
+                            <Link to="/tasks" className="nav-link">Back to Tasks</Link>
                         )}
                     </div>
                 </div>

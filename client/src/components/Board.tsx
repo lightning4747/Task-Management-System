@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import type { ITask, TaskStatus } from '../types';
 import Column from './Column';
 import Chatbot from './Chatbot';
 import TaskDrawer from './TaskDrawer';
-import AddTaskPage from './AddTaskPage';
-import { MOCK_TASKS } from '../constants/mockData';
 import './Board.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -22,14 +19,11 @@ const STATUSES: TaskStatus[] = [
 ];
 
 const Board: React.FC = () => {
-    const [tasks, setTasks] = useState<ITask[]>(MOCK_TASKS);
+    const [tasks, setTasks] = useState<ITask[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
-
-    const location = useLocation();
-    const isAddingNew = location.pathname === '/new-task';
 
     const showNotification = (message: string) => {
         setNotification(message);
@@ -44,7 +38,7 @@ const Board: React.FC = () => {
             setTasks(response.data);
         } catch (err: any) {
             console.error('Failed to fetch tasks:', err);
-            setError('Failed to load tasks. Using mock data.');
+            setError('Failed to load tasks. Please check if the server is running.');
         } finally {
             setIsLoading(false);
         }
@@ -121,7 +115,7 @@ const Board: React.FC = () => {
     }
 
     return (
-        <div className={`board-container ${selectedTaskId || isAddingNew ? 'drawer-open' : ''}`}>
+        <div className={`board-container ${selectedTaskId ? 'drawer-open' : ''}`}>
             {error && <div className="error-banner">{error}</div>}
 
             {notification && (
@@ -131,7 +125,7 @@ const Board: React.FC = () => {
                 </div>
             )}
 
-            <div className={`board-grid ${isAddingNew ? 'content-blur' : ''}`}>
+            <div className="board-grid">
                 {STATUSES.map(status => (
                     <Column
                         key={status}
@@ -154,8 +148,6 @@ const Board: React.FC = () => {
                     onClose={() => setSelectedTaskId(null)}
                 />
             )}
-
-            {isAddingNew && <AddTaskPage />}
 
             <Chatbot />
         </div>

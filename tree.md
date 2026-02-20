@@ -1,6 +1,6 @@
 # File Tree: kanban-project
 
-**Generated:** 2/20/2026, 10:39:59 AM
+**Generated:** 2/21/2026, 2:40:18 AM
 **Root Path:** `v:\React-projects\Task management system\kanban-project`
 
 ```
@@ -10,6 +10,26 @@
 │   ├── 📁 src
 │   │   ├── 📁 assets
 │   │   │   └── 🖼️ react.svg
+│   │   ├── 📁 components
+│   │   │   ├── 🎨 AddTaskModal.css
+│   │   │   ├── 📄 AddTaskModal.tsx
+│   │   │   ├── 🎨 AddTaskPage.css
+│   │   │   ├── 📄 AddTaskPage.tsx
+│   │   │   ├── 🎨 Board.css
+│   │   │   ├── 📄 Board.tsx
+│   │   │   ├── 📄 Chatbot.tsx
+│   │   │   ├── 📄 Column.tsx
+│   │   │   ├── 🎨 KanbanBoard.css
+│   │   │   ├── 📄 KanbanBoard.tsx
+│   │   │   ├── 📄 Layout.tsx
+│   │   │   ├── 📄 TaskCard.tsx
+│   │   │   ├── 📄 TaskDetail.tsx
+│   │   │   ├── 🎨 TaskDrawer.css
+│   │   │   └── 📄 TaskDrawer.tsx
+│   │   ├── 📁 constants
+│   │   │   └── 📄 mockData.ts
+│   │   ├── 📁 types
+│   │   │   └── 📄 index.ts
 │   │   ├── 🎨 App.css
 │   │   ├── 📄 App.tsx
 │   │   └── 📄 main.tsx
@@ -24,7 +44,10 @@
 │   └── 📄 vite.config.ts
 ├── 📁 docs
 │   ├── 📝 API_SPEC.md
-│   └── 📝 FRONTEND.md
+│   ├── 📝 BACKEND_SETUP.md
+│   ├── 📝 FRONTEND.md
+│   ├── 📝 PROGRESS.md
+│   └── 📝 PROGRESS_REPORT.md
 ├── 📁 server
 │   ├── 📁 src
 │   │   ├── 📁 config
@@ -47,11 +70,14 @@
 │   │   ├── 📁 services
 │   │   │   ├── 📄 chatbotService.ts
 │   │   │   └── 📄 taskService.ts
+│   │   ├── 📁 types
+│   │   │   └── 📄 index.ts
 │   │   ├── 📄 index.ts
 │   │   └── 📄 types.d.ts
 │   ├── ⚙️ package-lock.json
 │   ├── ⚙️ package.json
 │   └── ⚙️ tsconfig.json
+├── ⚙️ .env.example
 ├── ⚙️ .gitignore
 ├── 📝 README.md
 ├── ⚙️ package-lock.json
