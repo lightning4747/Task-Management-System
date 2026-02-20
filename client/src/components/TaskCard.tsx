@@ -55,7 +55,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onDelete, onDragStart
                         className="move-btn back-btn"
                         onClick={() => onMove(task.id, prevStatus)}
                     >
-                        Back ← 
+                        ← Back 
                     </button>
                 )}
                 {nextStatus && (
