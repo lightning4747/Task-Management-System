@@ -12,7 +12,7 @@ export interface ITask {
     title: string;
     description: string;
     status: TaskStatus;
-    updatedAt: string; // ISO 8601 date string, e.g. "2023-10-27T10:00:00Z"
+    updatedAt: string; // ISO 8601
 }
 
 export interface IChatbotResponse {

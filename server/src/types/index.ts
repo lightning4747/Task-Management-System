@@ -12,6 +12,11 @@ export interface ITask {
     title: string;
     description: string;
     status: TaskStatus;
+    category: string;
+    priority: 'Low' | 'Medium' | 'High';
+    comments: number;
+    dueDate: string;
+    assigneeAvatar: string;
     updatedAt: string; // ISO 8601 date string, e.g. "2023-10-27T10:00:00Z"
 }
 
