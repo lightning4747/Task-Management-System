@@ -24,7 +24,7 @@ const AddTaskPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!title.trim()) {
             setError('Title is required');
@@ -35,14 +35,17 @@ const AddTaskPage: React.FC = () => {
         setError(null);
 
         try {
-            // POST /api/tasks → create a task
             await axios.post(`${API_URL}/tasks`, {
                 title,
                 description,
                 status
             });
 
-            // Redirect back to the board after creation
+            // ─── THE MAGIC LINE ──────────────────────────────────────────
+            // This triggers handleRefresh in Board.tsx immediately
+            window.dispatchEvent(new CustomEvent('task-added'));
+            // ─────────────────────────────────────────────────────────────
+
             navigate('/tasks');
         } catch (err: any) {
             console.error('Failed to create task:', err);
