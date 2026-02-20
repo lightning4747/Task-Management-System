@@ -14,8 +14,18 @@ export interface ITask {
     status: TaskStatus;
     createdAt: string;
     updatedAt: string;
+    // --- INTEGRATED FRONTEND FIELDS (Optional to prevent DB errors) ---
+    category?: string;
+    priority?: 'Low' | 'Medium' | 'High';
+    comments?: number;
+    dueDate?: string;
+    assigneeAvatar?: string;
 }
 
 export interface IChatbotResponse {
-    message: string;
+    message: string; // Your Backend Field
+    // --- INTEGRATED FRONTEND FIELDS ---
+    reply?: string; 
+    action?: 'UPDATE_TASK' | 'CREATE_TASK' | 'DELETE_TASK' | null;
+    taskId?: number | null;
 }
