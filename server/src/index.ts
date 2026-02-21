@@ -16,21 +16,12 @@ const PORT = process.env.PORT || 8000;
 // Falls back to localhost for local development.
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'http://localhost:5173',
-    'http://localhost:4173',
+
 ].filter(Boolean) as string[];
 
 app.use(cors({
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        // Allow requests with no origin (curl, Postman, Railway health checks)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) return callback(null, true);
-        // Return false (not an Error) — cors middleware omits the ACAO header,
-        // the browser blocks the request, and we don't leak origin strings or trigger a 500.
-        console.warn(`CORS blocked origin: ${origin}`);
-        callback(null, false);
-    },
-    credentials: true,
+    origin: '*', // Allows EVERYTHING - only use this to test!
+    credentials: true
 }));
 
 // ── Middleware ────────────────────────────────────────────────────────────────
