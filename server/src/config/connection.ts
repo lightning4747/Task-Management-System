@@ -46,7 +46,7 @@ if (connectionUrl) {
     const username = process.env.MYSQLUSER ?? process.env.DB_USER ?? 'root';
     const password = process.env.MYSQLPASSWORD ?? process.env.DB_PASS ?? '';
     const host = process.env.MYSQLHOST ?? process.env.DB_HOST ?? 'localhost';
-    const port = parseInt(process.env.MYSQLPORT ?? '3306', 10);
+    const port = parseInt(process.env.MYSQLPORT ?? process.env.DB_PORT ?? '3306', 10);
 
     sequelize = new Sequelize(database, username, password, {
         host,

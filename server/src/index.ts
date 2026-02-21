@@ -15,17 +15,20 @@ const PORT = process.env.PORT || 8000;
 // FRONTEND_URL is set in Railway/Vercel env vars.
 // Falls back to localhost for local development.
 const allowedOrigins = [
-    process.env.FRONTEND_URL,           
-    'http://localhost:5173',             
-    'http://localhost:4173',             
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'http://localhost:4173',
 ].filter(Boolean) as string[];
 
 app.use(cors({
-    origin: (origin:any, callback:any) => { 
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         // Allow requests with no origin (curl, Postman, Railway health checks)
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes(origin)) return callback(null, true);
-        callback(new Error(`CORS: origin "${origin}" not allowed`));
+        // Return false (not an Error) — cors middleware omits the ACAO header,
+        // the browser blocks the request, and we don't leak origin strings or trigger a 500.
+        console.warn(`CORS blocked origin: ${origin}`);
+        callback(null, false);
     },
     credentials: true,
 }));
@@ -67,9 +70,16 @@ app.listen(PORT, () => {
 const startDB = async (): Promise<void> => {
     try {
         await sequelize.authenticate();
-        // alter: true — safely adds new columns without dropping existing data.
-        // Switch to force: true only when you need a clean slate.
-        await sequelize.sync({ alter: true });
+        // sync() with no options creates missing tables but never modifies or drops
+        // existing ones. This is safe for initial deployments on an empty database.
+        //
+        // ⚠️  DO NOT use { alter: true } or { force: true } in production:
+        //   - alter: true can cause timeouts and unexpected column changes on large tables.
+        //   - force: true drops and recreates every table (data loss).
+        //
+        // TODO: Replace with Sequelize CLI migrations for production schema changes:
+        //   npx sequelize-cli db:migrate
+        await sequelize.sync();
         console.log('✅  Database connected and schema synced.');
     } catch (error) {
         console.error('❌  Database connection failed. Server is still running.');
