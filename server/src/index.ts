@@ -11,58 +11,66 @@ import ChatbotController from './controllers/chatbotController.js';
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// ── CORS ──────────────────────────────────────────────────────────────────────
+// FRONTEND_URL is set in Railway/Vercel env vars.
+// Falls back to localhost for local development.
+const allowedOrigins = [
+    process.env.FRONTEND_URL,           
+    'http://localhost:5173',             
+    'http://localhost:4173',             
+].filter(Boolean) as string[];
+
+app.use(cors({
+    origin: (origin:any, callback:any) => { 
+        // Allow requests with no origin (curl, Postman, Railway health checks)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        callback(new Error(`CORS: origin "${origin}" not allowed`));
+    },
+    credentials: true,
+}));
+
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 // ── Health Check ──────────────────────────────────────────────────────────────
+// Used by Railway to verify the container is healthy before routing traffic.
+app.get('/health', (_req, res) => {
+    res.json({ status: 'ok', timestamp: new Date() });
+});
+
+// Legacy alias — keep so any existing monitors/docs still work
 app.get('/api/health', (_req, res) => {
-    res.json({ status: 'Server is running ✅' });
+    res.json({ status: 'ok', timestamp: new Date() });
 });
 
 // ── Task CRUD Routes ──────────────────────────────────────────────────────────
-// GET    /api/tasks        → fetch all tasks
 app.get('/api/tasks', TaskController.getAllTasks);
-
-//GET by id
 app.get('/api/tasks/:id', TaskController.getTaskById);
-
-// POST   /api/tasks        → create a task (default status: 'New')
 app.post('/api/tasks', TaskController.createTask);
-
-// PUT    /api/tasks/:id    → update title / description / status
 app.put('/api/tasks/:id', TaskController.updateTask);
-
-// DELETE /api/tasks/:id   → remove a task
 app.delete('/api/tasks/:id', TaskController.deleteTask);
 
 // ── Chatbot Route ─────────────────────────────────────────────────────────────
-// POST   /api/chatbot      → { message: "move 3 to In Progress" }
 app.post('/api/chatbot', ChatbotController.processMessage);
 
 // ── Error Handling (must be last) ─────────────────────────────────────────────
 app.use(errorHandler);
 
-// ── Start Server FIRST, then connect DB in background ────────────────────────
+// ── Start server first, then connect DB asynchronously ───────────────────────
 app.listen(PORT, () => {
-    console.log(`🚀  Server listening on http://localhost:${PORT}`);
-    console.log('');
-    console.log('  Available routes:');
-    console.log(`  GET    http://localhost:${PORT}/api/tasks`);
-    console.log(`  GET by id   http://localhost:${PORT}/api/tasks/:id`);
-    console.log(`  POST   http://localhost:${PORT}/api/tasks`);
-    console.log(`  PUT    http://localhost:${PORT}/api/tasks/:id`);
-    console.log(`  DELETE http://localhost:${PORT}/api/tasks/:id`);
-    console.log(`  POST   http://localhost:${PORT}/api/chatbot`);
-    console.log('');
+    console.log(`🚀  Server listening on port ${PORT}`);
+    console.log(`    Allowed origins: ${allowedOrigins.join(', ')}`);
 });
 
 const startDB = async (): Promise<void> => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync({ force: false }); // force: false → never drop existing tables
-        console.log('✅  Database connected and synced.');
+        // alter: true — safely adds new columns without dropping existing data.
+        // Switch to force: true only when you need a clean slate.
+        await sequelize.sync({ alter: true });
+        console.log('✅  Database connected and schema synced.');
     } catch (error) {
         console.error('❌  Database connection failed. Server is still running.');
         console.error('    Reason:', (error as Error).message);
