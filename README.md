@@ -1,12 +1,10 @@
-﻿# 📋 Kanban Task Management System
+# 📋 Kanban Task Management System
 
 A full-stack Kanban board application with an integrated AI chatbot, built with a modern React frontend and Node.js/Express backend.
 
 ---
 
 ## 🖼️ Screenshots
-
-> *Add your project screenshots below:*
 
 | Board View | Task Detail | Chatbot |
 |:---:|:---:|:---:|
@@ -45,17 +43,14 @@ A full-stack Kanban board application with an integrated AI chatbot, built with 
 
 ## ✨ Features
 
-- *Kanban Board* — Drag-and-drop task management across customizable columns
-- *Task Management* — Create, view, update, and delete tasks with detailed information
-- *AI Chatbot* — Built-in chatbot assistant powered by a custom Express controller
-- *Theme Toggle* — Light/dark mode support
-- *Task Drawer* — Slide-in panel for quick task previews
-- *Responsive Design* — Mobile-friendly layout using Tailwind CSS
+- **Kanban Board** — Drag-and-drop task management across customizable columns
+- **Task Management** — Create, view, update, and delete tasks with detailed information
+- **AI Chatbot** — Built-in chatbot assistant powered by a custom Express controller
+- **Theme Toggle** — Light/dark mode support
+- **Task Drawer** — Slide-in panel for quick task previews
+- **Responsive Design** — Mobile-friendly layout using Tailwind CSS
 
 ---
-
-## 📁 Project Structure
-
 
 ## 📁 Project Structure
 
@@ -89,7 +84,7 @@ kanban-project/
 ├── server/                        # Node.js + Express backend
 │   └── src/
 │       ├── config/
-│       │   └── connection.ts      # Sequelize DB connection    
+│       │   └── connection.ts      # Sequelize DB connection
 │       ├── controllers/
 │       │   ├── chatbotController.ts
 │       │   └── taskController.ts
@@ -116,6 +111,9 @@ kanban-project/
     ├── FRONTEND.md
     └── PROGRESS.md
 ```
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -126,22 +124,22 @@ kanban-project/
 
 ### 1. Clone the Repository
 
-bash
+```bash
 git clone https://github.com/lightning4747/Task-Management-System.git
 cd Task-Management-System
-
+```
 
 ### 2. Set Up the Server
 
-bash
+```bash
 cd server
 npm install
 cp .env.example .env
+```
 
+Edit `server/.env` with your database credentials:
 
-Edit server/.env with your database credentials:
-
-env
+```env
 # ── Server ───────────────────────────────────────────
 PORT=8000
 
@@ -160,34 +158,33 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASS=
 DB_NAME=kanban_db
-
-
+```
 
 Run the server:
 
-bash
+```bash
 npm run dev
-
+```
 
 ### 3. Set Up the Client
 
-bash
+```bash
 cd ../client
 npm install
 cp .env.example .env
+```
 
+Edit `client/.env`:
 
-Edit client/.env:
-
-env
+```env
 VITE_API_URL="YOUR_FRONTEND_URL"
-
+```
 
 Run the frontend:
 
-bash
+```bash
 npm run dev
-
+```
 
 The app will be available at https://task-management-system-blue-phi.vercel.app/tasks.
 
@@ -196,12 +193,12 @@ The app will be available at https://task-management-system-blue-phi.vercel.app/
 ## 📡 API Overview
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/tasks | Fetch all tasks |
-| POST | /api/tasks | Create a new task |
-| PUT | /api/tasks/:id | Update a task |
-| DELETE | /api/tasks/:id | Delete a task |
-| POST | /api/chatbot | Send a message to the AI chatbot |
+|:------:|----------|-------------|
+| GET | `/api/tasks` | Fetch all tasks |
+| POST | `/api/tasks` | Create a new task |
+| PUT | `/api/tasks/:id` | Update a task |
+| DELETE | `/api/tasks/:id` | Delete a task |
+| POST | `/api/chatbot` | Send a message to the AI chatbot |
 
 > See [docs/API_SPEC.md](./docs/API_SPEC.md) for the full API specification.
 
@@ -211,17 +208,17 @@ The app will be available at https://task-management-system-blue-phi.vercel.app/
 
 ### Frontend — Vercel
 
-The client is configured for deployment on Vercel via client/vercel.json. Connect your GitHub repo to Vercel and set the root directory to client/.
+The client is configured for deployment on Vercel via `client/vercel.json`. Connect your GitHub repo to Vercel and set the root directory to `client/`.
 
 Set the following environment variable in the Vercel dashboard:
 
-
+```
 VITE_API_URL=https://your-backend-url.com
-
+```
 
 ### Backend — Railway (or any Node.js host)
 
-Deploy the server/ folder to Railway or any platform supporting Node.js. Set the required environment variables in the platform's settings.
+Deploy the `server/` folder to Railway or any platform supporting Node.js. Set the required environment variables in the platform's settings.
 
 ---
 
@@ -239,18 +236,20 @@ Deploy the server/ folder to Railway or any platform supporting Node.js. Set the
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: git checkout -b feature/your-feature
-3. Commit your changes: git commit -m 'Add your feature'
-4. Push to the branch: git push origin feature/your-feature
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'Add your feature'`
+4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
 
 ---
+
 ## Contributors
 
-Gurunesh M
+Gurunesh M  
 Vignesh T
+
+---
 
 ## 📄 License
 
-
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
