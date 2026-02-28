@@ -3,6 +3,8 @@
 A full-stack Kanban board application with an integrated AI chatbot, built with a modern React frontend and Node.js/Express backend.
 
 ---
+# update
+Removed the deployment due to infra cost 🙏
 
 ## 🖼️ Screenshots
 
@@ -253,3 +255,4 @@ Vignesh T
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
